@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation project(':projA')
+    implementation 'org.testng:testng:7.4.0'
+}
+
+task runJavaExec(type: JavaExec) {
+    systemProperties = System.getProperties()
+    outputs.upToDateWhen { false }
+    def suite = 'src/test/resources/suite.xml'
+    def skipSpiListeners = '-spilistenerstoskip com.example.MySuiteListener'
+    main 'org.testng.TestNG'
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.test.compileClasspath
+    args(skipSpiListeners.split() + suite)
+}
+
+test {
+    outputs.upToDateWhen { false }
+    useTestNG() {
+        suites('src/test/resources/suite.xml')
+    }
+    testLogging {
+        events "passed", "skipped", "failed", "standardError", "standardOut"
+        exceptionFormat "full"
+    }
+}

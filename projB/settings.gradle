@@ -1,0 +1,3 @@
+rootProject.name = 'projB'
+include ':projA'
+project(':projA').projectDir = new File("../projA")
